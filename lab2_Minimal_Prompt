@@ -1,0 +1,58 @@
+You are helping me build a small log-analysis tool in Python.
+
+## The data
+
+I have a security log from a web application's login system. Every line is one login
+attempt. Here are 10 real lines from it so you can see the format:
+
+2025-06-02T00:00:22.958Z host=auth-gw-01 svc=login event=AUTH_SUCCESS user=user_eaf224 uid=-9081990751822107716 src_ip=46.212.34.208 country=NO asn=AS41164 device=desktop result=success reason=ok ua="Mozilla/5.0  (X11; Linux armv7l) AppleWebKit/537.36 (KHTML, like Gecko Chrome/69.0.3497.17.22.81 Safari/537.36"
+2025-06-02T00:15:31.601Z host=auth-gw-01 svc=login event=AUTH_FAILURE user=user_3c1fac uid=1595739281232346896 src_ip=77.222.214.25 country=NO asn=AS29695 device=mobile result=fail reason=invalid_credentials ua="Mozilla/5.0  (iPhone; CPU iPhone OS 13_4 like Mac OS X) AppleWebKit/537.36 (KHTML, like Gecko Chrome/81.0.4044.1928.111 Mobile Safari/537.36,gzip(gfe,gzip(gfe variation/222762"
+2025-06-02T00:23:35.656Z host=auth-gw-01 svc=login event=AUTH_SUCCESS user=user_cca0ed uid=1934635222922758987 src_ip=23.137.224.214 country=US asn=AS393398 device=mobile result=success reason=ok ua="Mozilla/5.0  (Linux; Android 4.1; Galaxy Nexus Build/JRN84D) AppleWebKit/537.36 (KHTML, like Gecko Version/4.0 Chrome/60.0.3112.116 Mobile Safari/537.36 SamsungBrowser/CrossApp/0.1"
+2025-06-02T02:05:00.000Z host=auth-gw-01 svc=login event=AUTH_FAILURE user=user_a44feb uid=-4324475583306591935 src_ip=10.0.181.206 country=ZA asn=AS262582 device=desktop result=fail reason=invalid_credentials ua="Mozilla/5.0  (Macintosh; Intel Mac OS X 11_6_3) AppleWebKit/537.36 (KHTML, like Gecko Chrome/72.0.3626.82.96 Safari/537.36"
+2025-06-02T02:08:42.972Z host=auth-gw-01 svc=login event=AUTH_FAILURE user=user_a44feb uid=-4324475583306591935 src_ip=10.0.181.204 country=BR asn=AS262582 device=desktop result=fail reason=invalid_credentials ua="Mozilla/5.0  (Macintosh; Intel Mac OS X 11_6_3) AppleWebKit/537.36 (KHTML, like Gecko Chrome/84.0.4147.338.339.125 Safari/537.36/QN0TI7Tz-14"
+2025-06-03T02:41:00.000Z host=auth-gw-01 svc=login event=AUTH_FAILURE user=user_840bfc uid=770011220033445566 src_ip=45.148.10.77 country=RU asn=AS205100 device=desktop result=fail reason=invalid_credentials ua="python-requests/2.31.0"
+2025-06-03T02:42:17.811Z host=auth-gw-01 svc=login event=AUTH_SUCCESS user=user_840bfc uid=770011220033445566 src_ip=45.148.10.77 country=RU asn=AS205100 device=desktop result=success reason=ok ua="python-requests/2.31.0"
+2025-06-04T03:12:00.000Z host=auth-gw-01 svc=login event=AUTH_FAILURE user=user_a44feb uid=-4324475583306591935 src_ip=10.3.205.197 country=RU asn=AS15599 device=bot result=fail reason=invalid_credentials ua="ZipppBot/0.11 (ZipppBot; https://github.com/das-group/rba-dataset; webmaster@zippp.net)"
+2025-06-04T03:12:22.589Z host=auth-gw-01 svc=login event=AUTH_FAILURE user=user_a44feb uid=-4324475583306591935 src_ip=10.3.205.197 country=RU asn=AS15599 device=bot result=fail reason=invalid_credentials ua="ZipppBot/0.11 (ZipppBot; https://github.com/das-group/rba-dataset; webmaster@zippp.net)"
+2025-06-04T03:12:38.134Z host=auth-gw-01 svc=login event=AUTH_FAILURE user=user_a44feb uid=-4324475583306591935 src_ip=10.3.205.195 country=RU asn=AS15599 device=bot result=fail reason=invalid_credentials ua="ZipppBot/0.11 (ZipppBot; https://github.com/das-group/rba-dataset; webmaster@zippp.net)"
+
+Those 10 lines are only so you can work out the format. The real file has 8,945 lines
+and lives here:
+
+    https://raw.githubusercontent.com/cyberirishman/5-day-AI-Cyber/main/day2_auth.log
+
+Read it straight from that URL. Do not ask me to upload anything.
+
+## What to build
+
+One Google Colab notebook. Keep it minimal — I want to read and understand every line.
+
+**Part 1 — Parse.** Turn all 8,945 lines into a pandas DataFrame, one row per attempt,
+one column per field. Turn the leading timestamp into a real datetime, not text.
+Print the number of rows and the column names so I can see it worked.
+
+**Part 2 — Signal 1: brute force.** One source trying password after password.
+Find every source IP address where the number of FAILED attempts inside any rolling
+60-second window is MORE THAN 5. "Rolling" means slide a 60-second window along the
+timeline — not fixed clock minutes. "More than 5" means 6 or more.
+Print a small table: IP address, total failures, most failures in any 60-second window,
+and the country.
+
+**Part 3 — Signal 2: distributed attack.** The opposite shape — one account attacked
+from many places at once. Find the account (use the uid field) with the most failed
+attempts, then report: how many attempts against it in total, how many of those failed,
+how many distinct source IPs were used, and how many distinct countries.
+
+**Part 4 — Summary.** Print a short plain-English summary of what the tool found.
+
+## Rules
+
+- Runs top to bottom in Colab with no edits and no errors.
+- pandas and the Python standard library only. No pip installs.
+- Comment every block for someone who has never written Python before. Say what each
+  line does and why, not just what it is called.
+- Watch out: the `ua=` field is wrapped in double quotes and contains spaces, equals
+  signs and semicolons inside it. A plain `.split()` on spaces will break. Handle it.
+- Print results as small readable tables. No charts.
+- `uid=` is the account being logged INTO — the target, not the attacker.
+- Build only the two signals above. Nothing else.
