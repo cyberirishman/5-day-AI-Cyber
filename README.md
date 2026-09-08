@@ -14,7 +14,9 @@ index,Login Timestamp,User ID,Round-Trip Time [ms],IP Address,Country,Region,Cit
    
 In the <b>day2_auth.log</b> file the logs are derived from the RBA dataset with 30 extra augmented logs to find with our projects.  
 These are in the format :   
-  
+note "user=user_35924a uid=-602929497224448488" are anonomized versions of the user the attacker is trying to log in as not the linux UID    
+
+   
 2025-06-02T00:09:12.904Z host=auth-gw-01 svc=login event=AUTH_SUCCESS user=user_35924a uid=-602929497224448488 src_ip=10.0.64.186 country=NO asn=AS29695 device=mobile result=success reason=ok ua="Mozilla/5.0  (iPhone; CPU iPhone OS 13_4 like Mac OS X) AppleWebKit/537.36 (KHTML, like Gecko Chrome/81.0.4044.1925.138 Mobile Safari/537.36 OPT/2.4"  
 2025-06-02T00:15:31.601Z host=auth-gw-01 svc=login event=AUTH_FAILURE user=user_3c1fac uid=1595739281232346896 src_ip=77.222.214.25 country=NO asn=AS29695 device=mobile result=fail reason=invalid_credentials ua="Mozilla/5.0  (iPhone; CPU iPhone OS 13_4 like Mac OS X) AppleWebKit/537.36 (KHTML, like Gecko Chrome/81.0.4044.1928.111 Mobile Safari/537.36,gzip(gfe,gzip(gfe variation/222762"   
 2025-06-02T00:19:54.843Z host=auth-gw-01 svc=login event=AUTH_SUCCESS user=user_ec3cdd uid=6257035908712866724 src_ip=91.186.5.48 country=GB asn=AS29550 device=desktop result=success reason=ok ua="Mozilla/5.0  (X11; CrOS armv7l 5978.98.0) AppleWebKit/537.36 (KHTML, like Gecko Chrome/79.0.3945.192.194.130 Safari/537.36 RuxitSynthetic/1.0 v5043457830 t8347097904287973985"  
